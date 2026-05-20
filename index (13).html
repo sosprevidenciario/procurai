@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>Procuração Digital — Adv. Maria Fabiana</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#f4f4f1;--card:#fff;--ink:#111;--muted:#777;--border:#e5e5e5;--blue:#2563eb;--green:#16a34a;--orange:#d97706;--red:#dc2626;--radius:14px}
+html,body{min-height:100%;background:var(--bg);color:var(--ink);font-family:'Segoe UI',system-ui,sans-serif}
+.tela{display:none;min-height:100vh}.tela.ativa{display:block}
+.wrap{max-width:600px;margin:0 auto;padding:16px 16px 48px;display:flex;flex-direction:column;gap:12px}
+.topbar{background:#fff;border-bottom:1px solid var(--border);padding:13px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;gap:10px}
+.topbar h2{font-size:15px;font-weight:700}.topbar p{font-size:11px;color:var(--muted);margin-top:1px}
+.topbar-actions{display:flex;gap:8px;flex-shrink:0}
+.card{background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:0 1px 3px rgba(0,0,0,.07)}
+.card-title{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#bbb;margin-bottom:12px}
+.field{margin-bottom:12px}.field:last-child{margin-bottom:0}
+.field label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:5px}
+.field input{width:100%;padding:12px 13px;border-radius:10px;border:1.5px solid var(--border);background:#fafafa;font-size:15px;font-family:inherit;color:var(--ink);-webkit-appearance:none;transition:border-color .15s}
+.field input:focus{outline:none;border-color:var(--ink);background:#fff}
+.row{display:flex;gap:10px}.row .field{flex:1;min-width:0}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:12px 18px;border-radius:11px;border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:opacity .15s;white-space:nowrap;-webkit-appearance:none}
+.btn:active{opacity:.75}.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-full{width:100%;padding:16px;font-size:15px;border-radius:var(--radius)}
+.btn-ink{background:var(--ink);color:#fff}
+.btn-blue{background:var(--blue);color:#fff}
+.btn-green{background:var(--green);color:#fff}
+.btn-ghost{background:#f4f4f1;border:1.5px solid var(--border);color:var(--muted)}
+.btn-red{background:#fee2e2;border:1.5px solid #fca5a5;color:var(--red)}
+.btn-sm{padding:8px 13px;font-size:13px;border-radius:9px}
+.tipo-group{display:flex;gap:10px}
+.tipo-btn{flex:1;padding:12px;border-radius:11px;border:2px solid var(--border);background:#fafafa;color:#666;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}
+.tipo-btn.ativo{border-color:var(--ink);background:var(--ink);color:#fff}
+.menor-section{display:none}.menor-section.visivel{display:flex;flex-direction:column;gap:12px}
+
+/* LISTA */
+.lista-wrap{max-width:600px;margin:0 auto;padding:16px 16px 48px;display:flex;flex-direction:column;gap:10px}
+.contrato-item{background:#fff;border-radius:var(--radius);padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.07);display:flex;align-items:center;gap:12px}
+.contrato-clicavel{flex:1;display:flex;align-items:center;gap:12px;cursor:pointer;min-width:0}
+.contrato-avatar{width:44px;height:44px;border-radius:50%;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;flex-shrink:0}
+.contrato-info{flex:1;min-width:0}
+.contrato-info h3{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.contrato-info p{font-size:12px;color:var(--muted);margin-top:2px}
+.contrato-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;flex-shrink:0}
+.badge-orange{background:#fef3c7;color:#92400e}
+.badge-green{background:#dcfce7;color:#14532d}
+.dot{width:7px;height:7px;border-radius:50%}
+.dot-pulse{background:var(--orange);animation:pulse 1.5s infinite}
+.dot-solid{background:var(--green)}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.4)}}
+.lixeira{width:32px;height:32px;border-radius:8px;border:none;background:#fee2e2;color:var(--red);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s}
+.lixeira:hover{background:#fca5a5}
+
+/* MODAL CONFIRMAÇÃO */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:999;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.show{display:flex}
+.modal-box{background:#fff;border-radius:16px;padding:24px;max-width:360px;width:100%;text-align:center}
+.modal-box h3{font-size:17px;font-weight:700;margin-bottom:8px}
+.modal-box p{font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.5}
+.modal-btns{display:flex;gap:10px}
+.modal-btns button{flex:1}
+
+.status-hero{text-align:center;padding:28px 20px}
+.status-hero .icon{font-size:56px;margin-bottom:10px}
+.status-hero h3{font-size:19px;font-weight:700;margin-bottom:6px}
+.status-hero p{font-size:13px;color:var(--muted);line-height:1.6}
+.link-row{background:#f8f8f6;border:1.5px dashed #ccc;border-radius:10px;padding:11px 13px;display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.link-row span{font-size:12px;color:var(--muted);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:monospace}
+.codigo-box{background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:11px;padding:14px}
+.codigo-box p{font-size:10px;font-weight:700;color:#166534;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px}
+.codigo-box code{font-size:12px;color:#166534;word-break:break-all;font-family:monospace;line-height:1.6}
+.doc-pages{max-width:700px;margin:0 auto;padding:14px;display:flex;flex-direction:column;gap:14px}
+.doc-page{background:#fff;padding:2cm 2.2cm;box-shadow:0 2px 12px rgba(0,0,0,.12);border-radius:4px}
+.doc-page h1,.doc-page h2{text-align:center;font-size:13pt;font-family:'Times New Roman',serif;margin-bottom:14pt;font-weight:bold}
+.doc-page p{text-align:justify;line-height:1.65;margin-bottom:8pt;font-size:11.5pt;font-family:'Times New Roman',serif}
+.doc-page ol{list-style:none;padding:0;margin-bottom:6pt}
+.doc-page ol li{text-align:justify;line-height:1.65;margin-bottom:6pt;font-size:11.5pt;font-family:'Times New Roman',serif}
+.sign-block{margin-top:auto;padding-top:16pt;border-top:1px solid #000}
+.sign-block p{text-align:center;margin-bottom:3pt;font-family:'Times New Roman',serif;font-size:11.5pt}
+@media(max-width:480px){.doc-page{padding:14px 12px}}
+.canvas-wrap{border:2px solid var(--border);border-radius:12px;overflow:hidden;background:#fafafa;position:relative}
+.canvas-wrap canvas{display:block;width:100%;touch-action:none;cursor:crosshair}
+.canvas-hint{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:14px;color:#ccc;pointer-events:none;text-align:center}
+.canvas-controls{display:flex;padding:8px;border-top:1px solid var(--border);gap:8px}
+.sucesso-wrap{max-width:440px;margin:0 auto;padding:48px 20px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:16px;min-height:100vh;justify-content:center}
+.sucesso-wrap .big-icon{font-size:72px}
+.sucesso-wrap h2{font-size:22px;font-weight:700;color:var(--green)}
+.sucesso-wrap>p{font-size:14px;color:var(--muted);line-height:1.6}
+.notif{position:fixed;top:16px;left:50%;transform:translateX(-50%);background:var(--green);color:#fff;padding:14px 24px;border-radius:14px;font-size:15px;font-weight:700;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.25);display:none;max-width:92vw;text-align:center}
+.notif.show{display:block;animation:slideIn .3s ease}
+@keyframes slideIn{from{opacity:0;top:0}to{opacity:1;top:16px}}
+.loading-overlay{position:fixed;inset:0;background:rgba(255,255,255,.9);flex-direction:column;align-items:center;justify-content:center;z-index:9999;gap:16px;display:none}
+.loading-overlay.show{display:flex}
+.spinner{width:40px;height:40px;border:4px solid var(--border);border-top-color:var(--ink);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-overlay p{font-size:15px;font-weight:600;color:var(--muted)}
+@media print{
+  .topbar,.no-print{display:none!important}
+  body{background:#fff}
+  .doc-pages{padding:0;gap:0}
+  .doc-page{box-shadow:none;border-radius:0;page-break-after:always;padding:2cm 2.5cm}
+  .doc-page:last-child{page-break-after:avoid}
+  @page{size:A4;margin:0}
+}
+</style>
+</head>
+<body>
+
+<div class="notif" id="notif"></div>
+<div class="loading-overlay" id="loading"><div class="spinner"></div><p id="loading-msg">Carregando...</p></div>
+
+<!-- MODAL CONFIRMAR EXCLUSÃO -->
+<div class="modal-overlay" id="modal-del">
+  <div class="modal-box">
+    <h3>🗑️ Excluir contrato?</h3>
+    <p id="modal-del-nome">Tem certeza que deseja excluir este contrato? Esta ação não pode ser desfeita.</p>
+    <div class="modal-btns">
+      <button class="btn btn-ghost" onclick="fecharModal()">Cancelar</button>
+      <button class="btn btn-full" style="background:var(--red);color:#fff" onclick="confirmarDelete()">Excluir</button>
+    </div>
+  </div>
+</div>
+
+<!-- TELA 1: LISTA -->
+<div class="tela ativa" id="t-lista">
+  <div class="topbar">
+    <div><h2>📋 Meus Contratos</h2><p>Adv. Maria Fabiana Lima Melo</p></div>
+    <button class="btn btn-sm btn-ink" onclick="irTela('t-form')">+ Novo</button>
+  </div>
+  <div class="lista-wrap">
+    <div id="lista-vazia" style="text-align:center;padding:48px 20px;color:var(--muted);display:none">
+      <div style="font-size:48px;margin-bottom:12px">📄</div>
+      <p style="font-size:15px;font-weight:600;margin-bottom:6px">Nenhum contrato ainda</p>
+      <p style="font-size:13px">Clique em "+ Novo" para começar</p>
+    </div>
+    <div id="lista-loading" style="text-align:center;padding:48px 20px;color:var(--muted)">
+      <div class="spinner" style="margin:0 auto 12px"></div>
+      <p style="font-size:13px">Carregando contratos...</p>
+    </div>
+    <div id="lista-items"></div>
+  </div>
+</div>
+
+<!-- TELA 2: FORMULÁRIO -->
+<div class="tela" id="t-form">
+  <div class="topbar">
+    <div><h2>📝 Nova Procuração</h2><p>Preencha os dados</p></div>
+    <button class="btn btn-sm btn-ghost" onclick="irTela('t-lista')">← Voltar</button>
+  </div>
+  <div class="wrap">
+    <div class="card">
+      <div class="card-title">Tipo de cliente</div>
+      <div class="tipo-group">
+        <button class="tipo-btn ativo" id="btnMaior" onclick="setTipo('maior')">Maior de idade</button>
+        <button class="tipo-btn" id="btnMenor" onclick="setTipo('menor')">Menor de idade</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Dados da cliente</div>
+      <div class="field"><label>Nome completo</label><input id="f-nome" type="text" placeholder="Nome completo" oninput="maiusculo(this)"/></div>
+      <div class="row">
+        <div class="field"><label>CPF</label><input id="f-cpf" type="text" inputmode="numeric" placeholder="000.000.000-00" oninput="maskCPF(this)"/></div>
+        <div class="field"><label>Data do documento</label><input id="f-data" type="date"/></div>
+      </div>
+      <div class="field"><label>Endereço (rua, nº, bairro)</label><input id="f-end" type="text" placeholder="Rua das Flores, nº 10"/></div>
+      <div class="row">
+        <div class="field"><label>Cidade/Estado</label><input id="f-cidade" type="text" placeholder="Natal/RN"/></div>
+        <div class="field"><label>CEP</label><input id="f-cep" type="text" inputmode="numeric" placeholder="59000-000" oninput="maskCEP(this)"/></div>
+      </div>
+    </div>
+    <div class="menor-section" id="menorSection">
+      <div class="card">
+        <div class="card-title">Dados da genitora</div>
+        <div class="field"><label>Nome da genitora</label><input id="f-nomeR" type="text" placeholder="Nome completo" oninput="maiusculo(this)"/></div>
+        <div class="field"><label>CPF da genitora</label><input id="f-cpfR" type="text" inputmode="numeric" placeholder="000.000.000-00" oninput="maskCPF(this)"/></div>
+        <div class="field"><label>Endereço da genitora</label><input id="f-endR" type="text" placeholder="Rua, nº, bairro"/></div>
+        <div class="row">
+          <div class="field"><label>Cidade/Estado</label><input id="f-cidR" type="text" placeholder="Natal/RN"/></div>
+          <div class="field"><label>CEP</label><input id="f-cepR" type="text" inputmode="numeric" placeholder="59000-000" oninput="maskCEP(this)"/></div>
+        </div>
+      </div>
+    </div>
+    <button class="btn btn-full btn-ink" id="btn-criar" onclick="criarContrato()">Criar Documento →</button>
+  </div>
+</div>
+
+<!-- TELA 3: PAINEL -->
+<div class="tela" id="t-painel">
+  <div class="topbar no-print">
+    <div><h2 id="p-titulo">Contrato</h2><p id="p-subtitulo">Aguardando assinatura</p></div>
+    <button class="btn btn-sm btn-ghost" onclick="irTela('t-lista')">← Lista</button>
+  </div>
+  <div id="bloco-pendente" style="display:none">
+    <div class="wrap" style="padding-top:10px">
+      <div class="card status-hero">
+        <div class="icon">⏳</div>
+        <span class="badge badge-orange" style="margin:0 auto 12px"><span class="dot dot-pulse"></span>Aguardando assinatura</span>
+        <h3 id="p-nome-aguardando"></h3>
+        <p>Envie o link abaixo para a cliente assinar digitalmente.</p>
+      </div>
+      <div class="card">
+        <div class="card-title">Link para a cliente assinar</div>
+        <div class="link-row">
+          <span id="p-link-display">—</span>
+          <button class="btn btn-sm btn-ink" onclick="copiarLink()">📋 Copiar</button>
+        </div>
+        <button class="btn btn-full btn-blue" onclick="enviarWhats()" style="margin-bottom:8px">💬 Enviar pelo WhatsApp</button>
+        <button class="btn btn-full btn-ghost" onclick="togglePreview()">👁️ Ver documento</button>
+      </div>
+    </div>
+  </div>
+  <div id="bloco-assinado" style="display:none">
+    <div class="wrap" style="padding-top:10px">
+      <div class="card status-hero">
+        <div class="icon">✅</div>
+        <span class="badge badge-green" style="margin:0 auto 12px"><span class="dot dot-solid"></span>Assinado!</span>
+        <h3 id="p-nome-assinado"></h3>
+        <p>Documento assinado com sucesso!</p>
+      </div>
+      <div class="card">
+        <div class="card-title">Registro de autenticidade</div>
+        <div class="codigo-box"><p>Código</p><code id="p-codigo">—</code></div>
+        <div style="margin-top:8px;font-size:12px;color:var(--muted)" id="p-data-assinatura"></div>
+      </div>
+      <button class="btn btn-full btn-green" onclick="baixarPDF()">📥 Baixar PDF Assinado</button>
+      <button class="btn btn-full btn-ghost" onclick="togglePreview()">👁️ Ver documento assinado</button>
+      <button class="btn btn-full btn-ghost" onclick="irTela('t-lista')">← Voltar para lista</button>
+    </div>
+  </div>
+  <div id="p-preview" class="doc-pages" style="display:none"></div>
+</div>
+
+<!-- TELA 4: CLIENTE -->
+<div class="tela" id="t-cliente">
+  <div class="topbar no-print">
+    <div><h2>📄 Sua Procuração</h2><p>Adv. Maria Fabiana — OAB/RN 17.182</p></div>
+  </div>
+  <div id="c-doc" class="doc-pages"></div>
+  <div style="max-width:700px;margin:0 auto;padding:0 14px 32px" class="no-print">
+    <button class="btn btn-full btn-green" onclick="setupCanvas();irTela('t-assinar')" style="font-size:16px;padding:17px">✍️ Assinar Documento</button>
+  </div>
+</div>
+
+<!-- TELA 5: ASSINAR -->
+<div class="tela" id="t-assinar">
+  <div class="topbar no-print">
+    <div><h2>✍️ Assinar</h2><p>Procuração Digital</p></div>
+    <button class="btn btn-sm btn-ghost" onclick="irTela('t-cliente')">← Voltar</button>
+  </div>
+  <div class="wrap">
+    <div class="card">
+      <div class="card-title">Sua assinatura</div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:12px;line-height:1.5">Assine usando o dedo (celular) ou mouse (computador)</p>
+      <div class="canvas-wrap">
+        <canvas id="sig-canvas" height="180"></canvas>
+        <div class="canvas-hint" id="canvas-hint">✍️ Assine aqui</div>
+        <div class="canvas-controls">
+          <button class="btn btn-sm btn-ghost" onclick="limparCanvas()">🗑️ Limpar</button>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Confirme seu nome</div>
+      <div class="field"><label>Nome completo</label><input id="sig-nome" type="text" placeholder="Digite seu nome completo" oninput="maiusculo(this)"/></div>
+    </div>
+    <div class="card" style="background:#f0fdf4;border:1.5px solid #bbf7d0">
+      <p style="font-size:12px;color:#166534;line-height:1.6">📋 <b>Validade jurídica:</b> Assinatura eletrônica simples válida para contratos civis conforme <b>Lei 14.063/2020</b>. Fica registrado seu nome, data, hora e código único.</p>
+    </div>
+    <button class="btn btn-full btn-green" id="btn-confirmar" onclick="confirmarAssinatura()">✅ Confirmar Assinatura</button>
+  </div>
+</div>
+
+<!-- TELA 6: SUCESSO CLIENTE -->
+<div class="tela" id="t-sucesso">
+  <div class="sucesso-wrap">
+    <div class="big-icon">✅</div>
+    <h2>Assinado com Sucesso!</h2>
+    <p>Sua assinatura eletrônica foi registrada.</p>
+    <div class="codigo-box" style="width:100%"><p>Código de Autenticidade</p><code id="c-codigo">—</code></div>
+    <button class="btn btn-full btn-green" onclick="baixarPDFCliente()">📥 Baixar minha cópia</button>
+  </div>
+</div>
+
+<script>
+/* ══ SUPABASE ══ */
+var SUPA_URL='https://kowuhlckuddpqouvmcwu.supabase.co';
+var SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtvd3VobGNrdWRkcHFvdXZtY3d1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkyMjg1NjksImV4cCI6MjA5NDgwNDU2OX0.8_oF-qKTZVv60kG0ZyUqMkJSsWx2MgjsFoUlwqvv4NE';
+
+
+async function sbFetch(path,opts){
+  var headers={"apikey":SUPA_KEY,"Authorization":"Bearer "+SUPA_KEY,"Content-Type":"application/json","Prefer":"return=representation"};
+  if(opts&&opts.headers) Object.assign(headers,opts.headers);
+  var cfg=Object.assign({},opts,{headers:headers});
+  var res=await fetch(SUPA_URL+"/rest/v1/"+path,cfg);
+  if(!res.ok){var e=await res.text();throw new Error(e);}
+  var txt=await res.text();
+  return txt?JSON.parse(txt):null;
+}
+
+
+
+
+
+
+
+
+/* ══ ESTADO ══ */
+var TIPO='maior',DOC=null,SIG=null;
+var canvas,ctx,desenhando=false,temTraco=false;
+var pollingTimer=null,previewAberto=false;
+var deleteId=null,deleteNome='';
+
+/* ══ TEXTOS ══ */
+var PODERES='A quem concede s poderes da cláusula <b>´´ ad judicia``</b> e para o foro em geral, podendo requerer judicial e extrajudicialmente o que for necessário para a defesa do outorgante, pedir e acompanhar <b><u>processos administrativos</u></b>, <b><u>processo judicial</u></b> conferindo-lhe ainda, <b><u>PODERES ESPECIAIS,</u></b> para renunciar, confessar, desistir, transigir, firmar compromissos ou acordos, fazer levantamento de alvarás, RPVs, precatório na esfera judicial e administrativa, receber e dar quitação, bem como proceder <b><u><i>com requisições de senhas e demais procedimentos administrativos em órgão públicos e privados entre eles junto AO INSS E A RECEITA FEDERAL,&nbsp;&nbsp;</i></u></b>para fins de soluções de problemas de interesse da outorgante, substabelecer o presente instrumento, com ou sem reserva de poderes e revogar o substabelecimento que fizer, sempre que necessário, dando tudo por bom, firme e valioso.';
+var ADV_OUT='<b>MARIA FABIANA LIMA MELO,</b> brasileira, casada, CPF 012.131.764-17 advogada, inscrita na Ordem dos Advogados do Brasil, Secional do Rio Grande do Norte, sob o nº 17.182 e <b>SOCIEDADE UNIPESSOAL DE ADVOCACIA</b> CNPJ 54.453.633-0001-06, com endereço na avenida Apodi, Tirol, Natal/RN, CEP 59:020130.';
+var ADV_CONT='<b>MARIA FABIANA LIMA MELO,</b> brasileira, casada, CPF 012.131.764-17 advogada, inscrita na Ordem dos Advogados do Brasil, Secional do Rio Grande do Norte, sob o nº 17.182 e <b>SOCIEDADE UNIPESSOAL DE ADVOCACIA</b> CNPJ 54.453.633-0001-06, com endereço na avenida Apodi, Tirol, Natal/RN, CEP 59:020130com as seguintes clausulas:';
+var CLAUSULAS=['1-&nbsp; A advogada contratada obriga-se diante dos poderes outorgados a prestar serviços profissionais na defesa dos direitos do contratante, desempenhando com zelo, a atividade a seu encargo em qualquer juízo instancia ou tribunal.','2-&nbsp; <b>Em remuneração a estes serviços, a advogada contratada receberá da contratante o valor a título de honorários contratuais o equivalente a 30% do valor total da demanda.</b>','3-&nbsp; Faculta-se a advogada a requerer nos autos, que lhes sejam pagos os honorários diretamente nos autos por retenção, nos termos do artigo 22, parágrafo 4º da Lei 8.906/1994 e por via administrativa para que banco venha a creditar direto em conta.','4-&nbsp; A contratante caberá o fornecimento de documentos e informações que a contratada solicitar.','5-&nbsp; A verba oriunda da parte adversa pelo princípio da sucumbência pertencerá na sua totalidade a advogada contratada, independentemente, do valor pago conforme clausula segunda, dos honorários contratuais.','6-&nbsp; As partes contratantes elegem o foro de Natal/RN para dirimir qualquer conflito em face do presente contrato.'];
+
+/* ══ INIT ══ */
+(function(){
+  var t=new Date();
+  var el=document.getElementById('f-data');
+  if(el) el.value=t.getFullYear()+'-'+p2(t.getMonth()+1)+'-'+p2(t.getDate());
+
+  var params=new URLSearchParams(window.location.search);
+  var docId=params.get('doc');
+  if(docId){
+    mostrarLoading('Carregando documento...');
+    sbFetch('contratos?id=eq.'+docId+'&select=*').then(function(rows){
+      esconderLoading();
+      if(!rows||!rows.length){document.body.innerHTML='<div style="padding:48px;text-align:center;font-family:sans-serif;color:#666"><p style="font-size:20px;margin-bottom:8px">❌ Link inválido</p><p>Solicite um novo link à advogada.</p></div>';return;}
+      DOC=rows[0];
+      if(DOC.assinado&&DOC.sig_codigo){
+        SIG={dataURL:DOC.sig_img,nome:DOC.sig_nome,codigo:DOC.sig_codigo,dataHora:DOC.sig_data};
+        document.getElementById('c-codigo').textContent=SIG.codigo;
+        renderDoc('c-doc',DOC,true);
+        irTela('t-sucesso');
+      } else {
+        renderDoc('c-doc',DOC,false);
+        irTela('t-cliente');
+      }
+    }).catch(function(){
+      esconderLoading();
+      document.body.innerHTML='<div style="padding:48px;text-align:center;font-family:sans-serif;color:#666"><p style="font-size:20px;margin-bottom:8px">⚠️ Documento não encontrado</p><p>Solicite um novo link à advogada.</p></div>';
+    });
+    return;
+  }
+  carregarLista();
+})();
+
+function p2(n){return String(n).padStart(2,'0');}
+
+/* ══ UI ══ */
+function irTela(id){
+  document.querySelectorAll('.tela').forEach(function(t){t.className='tela';});
+  document.getElementById(id).className='tela ativa';
+  window.scrollTo(0,0);
+}
+function setTipo(t){
+  TIPO=t;
+  document.getElementById('btnMaior').className='tipo-btn'+(t==='maior'?' ativo':'');
+  document.getElementById('btnMenor').className='tipo-btn'+(t==='menor'?' ativo':'');
+  document.getElementById('menorSection').className='menor-section'+(t==='menor'?' visivel':'');
+}
+function maiusculo(el){var s=el.selectionStart;el.value=el.value.toUpperCase();el.setSelectionRange(s,s);}
+function maskCPF(el){
+  var v=el.value.replace(/\D/g,'').slice(0,11);
+  v=v.replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d{1,2})$/,'$1-$2');
+  el.value=v;
+}
+function maskCEP(el){
+  var v=el.value.replace(/\D/g,'').slice(0,8);
+  v=v.replace(/(\d{5})(\d)/,'$1-$2');el.value=v;
+}
+function dataExtenso(ds){
+  if(!ds)return'';
+  var p=ds.split('-');
+  var M=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+  return parseInt(p[2])+' de '+M[parseInt(p[1])-1]+' de '+p[0];
+}
+function gerarCodigo(nome){
+  var h=0,s=nome+Date.now();
+  for(var i=0;i<s.length;i++){h=((h<<5)-h)+s.charCodeAt(i);h|=0;}
+  return 'PROC-'+Math.abs(h).toString(16).toUpperCase().padStart(8,'0')+'-'+Date.now().toString(36).toUpperCase();
+}
+function dataHoraAgora(){
+  var t=new Date();
+  return t.toLocaleDateString('pt-BR')+' às '+t.toLocaleTimeString('pt-BR');
+}
+function notif(msg,cor){
+  var el=document.getElementById('notif');
+  el.textContent=msg;
+  el.style.background=cor||'var(--green)';
+  el.className='notif show';
+  setTimeout(function(){el.className='notif';},7000);
+}
+function mostrarLoading(msg){document.getElementById('loading-msg').textContent=msg||'Carregando...';document.getElementById('loading').className='loading-overlay show';}
+function esconderLoading(){document.getElementById('loading').className='loading-overlay';}
+
+/* ══ MODAL DELETE ══ */
+function pedirDelete(id,nome,ev){
+  ev.stopPropagation();
+  deleteId=id; deleteNome=nome;
+  document.getElementById('modal-del-nome').textContent='Excluir o contrato de "'+nome+'"? Esta ação não pode ser desfeita.';
+  document.getElementById('modal-del').className='modal-overlay show';
+}
+function fecharModal(){document.getElementById('modal-del').className='modal-overlay';deleteId=null;}
+async function confirmarDelete(){
+  if(!deleteId){fecharModal();return;}
+  var idParaDeletar = deleteId;
+  fecharModal();
+  // Remove visualmente IMEDIATAMENTE
+  var items = document.querySelectorAll('.contrato-item');
+  items.forEach(function(el){
+    if(el.innerHTML.indexOf(idParaDeletar) > -1){
+      el.style.transition='opacity 0.3s';
+      el.style.opacity='0';
+      setTimeout(function(){el.remove();},300);
+    }
+  });
+  sessionStorage.setItem('notif_'+idParaDeletar,'1');
+  notif('🗑️ Contrato excluído');
+  // Deleta no banco em background
+  try{
+    await sbFetch('contratos?id=eq.'+idParaDeletar,{method:'DELETE'});
+  }catch(e){
+    notif('⚠️ Erro ao excluir no banco','#d97706');
+  }
+  // Verifica se lista ficou vazia
+  var restantes = document.querySelectorAll('.contrato-item');
+  if(!restantes.length){
+    document.getElementById('lista-vazia').style.display='block';
+  }
+}
+
+/* ══ LISTA ══ */
+async function carregarLista(){
+  document.getElementById('lista-loading').style.display='block';
+  document.getElementById('lista-items').innerHTML='';
+  document.getElementById('lista-vazia').style.display='none';
+  try{
+    var rows=await sbFetch('contratos?select=*&order=created_at.desc');
+    document.getElementById('lista-loading').style.display='none';
+    if(!rows||!rows.length){document.getElementById('lista-vazia').style.display='block';return;}
+
+    // Preenche sessionStorage com assinados já existentes (não notifica ao carregar)
+    rows.forEach(function(r){
+      if(r.assinado&&r.sig_nome) sessionStorage.setItem('notif_'+r.id,'1');
+    });
+
+    document.getElementById('lista-items').innerHTML=rows.map(function(c){
+      var ini=c.nome.split(' ').slice(0,2).map(function(n){return n[0];}).join('');
+      var badge=c.assinado
+        ?'<span class="badge badge-green"><span class="dot dot-solid"></span>Assinado</span>'
+        :'<span class="badge badge-orange"><span class="dot dot-pulse"></span>Pendente</span>';
+      var cStr=JSON.stringify(JSON.stringify(c));
+      return '<div class="contrato-item">'
+        +'<div class="contrato-clicavel" onclick=\'abrirPainel('+cStr+')\'>'
+        +'<div class="contrato-avatar">'+ini+'</div>'
+        +'<div class="contrato-info"><h3>'+c.nome+'</h3><p>'+dataExtenso(c.data_doc)+'</p></div>'
+        +'</div>'
+        +'<div class="contrato-right">'+badge
+        +'<button class="lixeira" title="Excluir" onclick=\'pedirDelete("'+c.id+'","'+c.nome.replace(/"/g,"'")+'",event)\'>🗑️</button>'
+        +'</div>'
+        +'</div>';
+    }).join('');
+    iniciarPollingGlobal();
+  }catch(e){
+    document.getElementById('lista-loading').style.display='none';
+    document.getElementById('lista-vazia').style.display='block';
+    document.getElementById('lista-vazia').innerHTML='<div style="font-size:36px;margin-bottom:12px">⚠️</div><p style="font-size:14px;font-weight:600;margin-bottom:8px">Configure o banco de dados</p><p style="font-size:12px;line-height:1.6">Acesse o Supabase → SQL Editor e execute o script de criação da tabela.</p>';
+  }
+}
+
+function abrirPainel(cJson){
+  var c=JSON.parse(cJson);
+  DOC=c;
+  SIG=c.assinado?{dataURL:c.sig_img,nome:c.sig_nome,codigo:c.sig_codigo,dataHora:c.sig_data}:null;
+  previewAberto=false;
+  atualizarPainel();
+  irTela('t-painel');
+  if(!c.assinado) iniciarPollingContrato();
+}
+
+/* ══ CRIAR ══ */
+async function criarContrato(){
+  var nome=document.getElementById('f-nome').value.trim();
+  var cpf=document.getElementById('f-cpf').value.trim();
+  var data=document.getElementById('f-data').value;
+  var end=document.getElementById('f-end').value.trim();
+  var cidade=document.getElementById('f-cidade').value.trim();
+  var cep=document.getElementById('f-cep').value.trim();
+  if(!nome||!cpf||!data||!end||!cidade||!cep){alert('Preencha todos os campos da cliente.');return;}
+
+  var payload={id:Date.now().toString(36)+Math.random().toString(36).slice(2,5),nome,cpf,tipo:TIPO,data_doc:data,endereco:end,cidade,cep,assinado:false};
+
+  if(TIPO==='menor'){
+    var nomeR=document.getElementById('f-nomeR').value.trim();
+    var cpfR=document.getElementById('f-cpfR').value.trim();
+    var endR=document.getElementById('f-endR').value.trim();
+    var cidR=document.getElementById('f-cidR').value.trim();
+    var cepR=document.getElementById('f-cepR').value.trim();
+    if(!nomeR||!cpfR||!endR||!cidR||!cepR){alert('Preencha todos os campos da genitora.');return;}
+    payload.nome_r=nomeR;payload.cpf_r=cpfR;payload.end_r=endR;payload.cid_r=cidR;payload.cep_r=cepR;
+  }
+
+  var btn=document.getElementById('btn-criar');
+  btn.disabled=true;btn.textContent='Salvando...';
+  mostrarLoading('Criando documento...');
+  try{
+    var rows=await sbFetch('contratos',{method:'POST',body:JSON.stringify(payload)});
+    esconderLoading();btn.disabled=false;btn.textContent='Criar Documento →';
+    DOC=rows&&rows[0]?rows[0]:payload;SIG=null;previewAberto=false;
+    ['f-nome','f-cpf','f-end','f-cidade','f-cep','f-nomeR','f-cpfR','f-endR','f-cidR','f-cepR'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+    atualizarPainel();irTela('t-painel');iniciarPollingContrato();
+  }catch(e){
+    esconderLoading();btn.disabled=false;btn.textContent='Criar Documento →';
+    notif('⚠️ Erro ao salvar.','#d97706');
+  }
+}
+
+/* ══ PAINEL ══ */
+function gerarLink(){
+  var base=window.location.href.split('?')[0].split('#')[0];
+  return base+'?doc='+DOC.id;
+}
+function atualizarPainel(){
+  var assinado=!!(DOC&&DOC.assinado&&DOC.sig_codigo);
+  document.getElementById('p-titulo').textContent=(DOC.nome||'').split(' ').slice(0,2).join(' ');
+  document.getElementById('p-subtitulo').textContent=assinado?'✅ Assinado':'⏳ Aguardando assinatura';
+  document.getElementById('bloco-pendente').style.display=assinado?'none':'block';
+  document.getElementById('bloco-assinado').style.display=assinado?'block':'none';
+  document.getElementById('p-preview').style.display='none';previewAberto=false;
+  if(!assinado){
+    document.getElementById('p-nome-aguardando').textContent=(DOC.nome||'').split(' ')[0];
+    document.getElementById('p-link-display').textContent=gerarLink();
+  } else {
+    document.getElementById('p-nome-assinado').textContent=(DOC.nome||'').split(' ')[0];
+    document.getElementById('p-codigo').textContent=DOC.sig_codigo||'—';
+    document.getElementById('p-data-assinatura').textContent='Assinado em: '+(DOC.sig_data||'—');
+  }
+}
+function togglePreview(){
+  var el=document.getElementById('p-preview');
+  if(!previewAberto){el.innerHTML=renderDocHTML(DOC,!!(DOC&&DOC.assinado));el.style.display='flex';el.scrollIntoView({behavior:'smooth'});previewAberto=true;}
+  else{el.style.display='none';previewAberto=false;}
+}
+function copiarLink(){
+  var link=gerarLink();
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(link).then(function(){notif('✅ Link copiado!');}).catch(function(){fallbackCopy(link);});}
+  else{fallbackCopy(link);}
+}
+function fallbackCopy(txt){
+  var ta=document.createElement('textarea');ta.value=txt;ta.style.cssText='position:fixed;opacity:0;top:0;left:0';
+  document.body.appendChild(ta);ta.focus();ta.select();
+  try{document.execCommand('copy');notif('✅ Link copiado!');}catch(e){alert('Copie o link:\n\n'+txt);}
+  document.body.removeChild(ta);
+}
+function enviarWhats(){
+  var link=gerarLink();
+  var primeiro=(DOC.nome||'').split(' ')[0];
+  var txt='Olá, '+primeiro+'! 😊\n\nSegue o link para você revisar e assinar sua Procuração digitalmente:\n\n'+link+'\n\nÉ só abrir o link, ler o documento e assinar com o dedo. ✍️\n\n_Adv. Maria Fabiana Lima Melo — OAB/RN 17.182_';
+  window.open('https://wa.me/?text='+encodeURIComponent(txt),'_blank');
+}
+
+/* ══ POLLING ══ */
+function tocarSom(){
+  try{
+    var ac=new(window.AudioContext||window.webkitAudioContext)();
+    var o=ac.createOscillator();var g=ac.createGain();
+    o.connect(g);g.connect(ac.destination);
+    o.frequency.setValueAtTime(520,ac.currentTime);
+    o.frequency.setValueAtTime(660,ac.currentTime+0.12);
+    o.frequency.setValueAtTime(800,ac.currentTime+0.24);
+    g.gain.setValueAtTime(0.3,ac.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+0.6);
+    o.start(ac.currentTime);o.stop(ac.currentTime+0.6);
+  }catch(e){}
+}
+
+function notifAssinatura(nome){
+  notif('🎉 '+nome+' assinou o documento!');
+  tocarSom();
+  if('Notification' in window&&Notification.permission==='granted'){
+    new Notification('✅ Documento Assinado!',{body:nome+' acabou de assinar a procuração.'});
+  }
+}
+
+function iniciarPollingContrato(){
+  if(pollingTimer)clearInterval(pollingTimer);
+  pollingTimer=setInterval(async function(){
+    if(!DOC||DOC.assinado)return;
+    try{
+      var rows=await sbFetch('contratos?id=eq.'+DOC.id+'&select=assinado,sig_codigo,sig_nome,sig_data,sig_img');
+      if(rows&&rows[0]&&rows[0].assinado&&rows[0].sig_codigo){
+        Object.assign(DOC,rows[0]);
+        SIG={dataURL:DOC.sig_img,nome:DOC.sig_nome,codigo:DOC.sig_codigo,dataHora:DOC.sig_data};
+        // Marca como notificado antes de mostrar
+        sessionStorage.setItem('notif_'+DOC.id,'1');
+        if(document.getElementById('t-painel').classList.contains('ativa'))atualizarPainel();
+        notifAssinatura((DOC.nome||'').split(' ')[0]);
+        clearInterval(pollingTimer);
+        carregarLista();
+      }
+    }catch(e){}
+  },3000);
+}
+
+var pollingGlobalTimer=null;
+function iniciarPollingGlobal(){
+  // Pede permissão só uma vez, só em HTTPS (Netlify)
+  if('Notification' in window&&Notification.permission==='default'&&location.protocol==='https:') Notification.requestPermission();
+  if(pollingGlobalTimer)clearInterval(pollingGlobalTimer);
+  pollingGlobalTimer=setInterval(async function(){
+    try{
+      var rows=await sbFetch('contratos?select=id,assinado,sig_nome,nome&order=created_at.desc');
+      if(!rows)return;
+      rows.forEach(function(r){
+        // Só notifica se NÃO está na sessionStorage (novo evento desde que abriu a página)
+        if(r.assinado&&r.sig_nome&&!sessionStorage.getItem('notif_'+r.id)){
+          sessionStorage.setItem('notif_'+r.id,'1');
+          notifAssinatura(r.nome.split(' ')[0]);
+        }
+      });
+      // Atualiza badges
+      if(document.getElementById('t-lista').classList.contains('ativa')){
+        var items=document.querySelectorAll('.contrato-item');
+        rows.forEach(function(r,i){
+          var badge=items[i]&&items[i].querySelector('.badge');
+          if(badge){
+            badge.className=r.assinado?'badge badge-green':'badge badge-orange';
+            badge.innerHTML=r.assinado?'<span class="dot dot-solid"></span>Assinado':'<span class="dot dot-pulse"></span>Pendente';
+          }
+        });
+      }
+    }catch(e){}
+  },4000);
+}
+
+/* ══ DOCUMENTO ══ */
+function renderDocHTML(d,assinado){
+  var cidadeData=(d.cidade||'')+', '+dataExtenso(d.data_doc||'');
+  var outorgante,contratante;
+  if(d.tipo==='maior'){
+    outorgante='OUTORGANTE: <b>'+(d.nome||'')+',</b> brasileira, inscrita no cadastro de pessoa física sob o número de CPF: '+(d.cpf||'')+'. Residente e domiciliada a rua: '+(d.endereco||'')+' – '+(d.cidade||'')+'. Cep: '+(d.cep||'')+'.';
+    contratante='<b>'+(d.nome||'')+',</b> brasileira, inscrita no cadastro de pessoa física sob o número de CPF: '+(d.cpf||'')+'. Residente e domiciliada a rua: '+(d.endereco||'')+' – '+(d.cidade||'')+'. Cep: '+(d.cep||'')+'. Contrata';
+  } else {
+    outorgante='OUTORGANTE: <b>'+(d.nome||'')+',</b> menor, brasileira, inscrita no cadastro de pessoa física sob o número de CPF: '+(d.cpf||'')+'. Neste ato representado por sua genitora, <b>'+(d.nome_r||'')+'</b>, inscrita no cadastro de pessoa física sob o número de CPF: '+(d.cpf_r||'')+'. Residente e domiciliada a rua: '+(d.end_r||'')+' – '+(d.cid_r||'')+' – Cep: '+(d.cep_r||'')+'.';
+    contratante='<b>'+(d.nome||'')+',</b> menor, brasileira, inscrita no cadastro de pessoa física sob o número de CPF: '+(d.cpf||'')+'. Neste ato representado por sua genitora, <b>'+(d.nome_r||'')+'</b>, inscrita no cadastro de pessoa física sob o número de CPF: '+(d.cpf_r||'')+'. Residente e domiciliada a rua: '+(d.end_r||'')+' – '+(d.cid_r||'')+' – Cep: '+(d.cep_r||'')+'. Contrata';
+  }
+  var s=assinado&&SIG?SIG:{};
+  var sigImg=s.dataURL?'<img src="'+s.dataURL+'" style="max-width:180px;height:60px;display:block;margin:6pt auto 2pt"/>':'';
+  var assProc,assCont;
+  if(d.tipo==='maior'){
+    assProc='<div class="sign-block"><p>'+cidadeData+'</p><br/>'+sigImg+'<p>___________________________________</p><p>Outorgante</p></div>';
+    assCont='<div class="sign-block"><p>'+cidadeData+'</p><br/>'+sigImg+'<p>___________________________________</p><p><b>Contratante</b></p><br/><p>MARIA FABIANA LIMA MELO</p><p><b>OAB/RN 17.182</b></p><p>Assinatura Digital</p></div>';
+  } else {
+    assProc='<div class="sign-block"><p>'+cidadeData+'</p><br/>'+sigImg+'<p>___________________________________</p><p>Outorgante</p><br/><br/><p>___________________</p><p>Representante legal</p></div>';
+    assCont='<div class="sign-block"><p>'+cidadeData+'</p><br/>'+sigImg+'<p>___________________________________</p><p><b>Contratante</b></p><br/><br/><p>___________________________________</p><p><b>Representante legal</b></p><br/><p>MARIA FABIANA LIMA MELO</p><p><b>OAB/RN 17.182</b></p><p>Assinatura Digital</p></div>';
+  }
+  var rodape=s.codigo?'<div style="margin-top:10pt;padding:8pt;border:1px solid #ddd;border-radius:4pt;background:#f9f9f9"><p style="font-size:8pt;text-align:center;color:#555;margin:0"><b>ASSINATURA ELETRÔNICA — Lei 14.063/2020</b><br/>Signatário: '+s.nome+' | Data: '+s.dataHora+'<br/>Código: <b>'+s.codigo+'</b></p></div>':'';
+  return '<div class="doc-page"><h1>PROCURAÇÃO</h1><p>'+outorgante+'</p><p>OUTORGADA: '+ADV_OUT+'</p><p><b>PODERES: </b>'+PODERES+'</p>'+assProc+'</div>'
+    +'<div class="doc-page"><h2>CONTRATO DE HONORÁRIO</h2><p>'+contratante+' '+ADV_CONT+'</p><ol>'+CLAUSULAS.map(function(c){return'<li>'+c+'</li>';}).join('')+'</ol>'+assCont+rodape+'</div>';
+}
+function renderDoc(elId,d,assinado){document.getElementById(elId).innerHTML=renderDocHTML(d,assinado);}
+
+/* ══ CANVAS ══ */
+function setupCanvas(){
+  canvas=document.getElementById('sig-canvas');if(!canvas)return;
+  ctx=canvas.getContext('2d');
+  canvas.width=canvas.offsetWidth||340;canvas.height=180;
+  ctx.strokeStyle='#111';ctx.lineWidth=2.5;ctx.lineCap='round';ctx.lineJoin='round';
+  temTraco=false;desenhando=false;
+  document.getElementById('canvas-hint').style.display='block';
+  function getPos(e){var r=canvas.getBoundingClientRect();var src=e.touches?e.touches[0]:e;return{x:(src.clientX-r.left)*(canvas.width/r.width),y:(src.clientY-r.top)*(canvas.height/r.height)};}
+  canvas.onmousedown=function(e){desenhando=true;var p=getPos(e);ctx.beginPath();ctx.moveTo(p.x,p.y);};
+  canvas.onmousemove=function(e){if(!desenhando)return;var p=getPos(e);ctx.lineTo(p.x,p.y);ctx.stroke();temTraco=true;document.getElementById('canvas-hint').style.display='none';};
+  canvas.onmouseup=canvas.onmouseleave=function(){desenhando=false;};
+  canvas.ontouchstart=function(e){e.preventDefault();desenhando=true;var p=getPos(e);ctx.beginPath();ctx.moveTo(p.x,p.y);};
+  canvas.ontouchmove=function(e){e.preventDefault();if(!desenhando)return;var p=getPos(e);ctx.lineTo(p.x,p.y);ctx.stroke();temTraco=true;document.getElementById('canvas-hint').style.display='none';};
+  canvas.ontouchend=function(){desenhando=false;};
+}
+function limparCanvas(){if(!canvas){setupCanvas();return;}ctx.clearRect(0,0,canvas.width,canvas.height);temTraco=false;document.getElementById('canvas-hint').style.display='block';}
+
+/* ══ CONFIRMAR ASSINATURA ══ */
+async function confirmarAssinatura(){
+  if(!canvas||!temTraco){alert('Por favor, assine no espaço indicado.');return;}
+  var nome=document.getElementById('sig-nome').value.trim();
+  if(!nome||nome.split(' ').length<2){alert('Digite seu nome completo (nome e sobrenome).');return;}
+  var btn=document.getElementById('btn-confirmar');
+  btn.disabled=true;btn.textContent='Salvando...';
+  mostrarLoading('Registrando assinatura...');
+  var codigo=gerarCodigo(nome);var dh=dataHoraAgora();var imgData=canvas.toDataURL('image/png');
+  try{
+    await sbFetch('contratos?id=eq.'+DOC.id,{method:'PATCH',body:JSON.stringify({assinado:true,sig_nome:nome,sig_codigo:codigo,sig_data:dh,sig_img:imgData})});
+    esconderLoading();btn.disabled=false;btn.textContent='✅ Confirmar Assinatura';
+    SIG={dataURL:imgData,nome,codigo,dataHora:dh};
+    DOC.assinado=true;DOC.sig_codigo=codigo;DOC.sig_nome=nome;DOC.sig_data=dh;DOC.sig_img=imgData;
+    document.getElementById('c-codigo').textContent=codigo;
+    irTela('t-sucesso');
+  }catch(e){
+    esconderLoading();btn.disabled=false;btn.textContent='✅ Confirmar Assinatura';
+    notif('⚠️ Erro ao salvar assinatura. Tente novamente.','#d97706');
+  }
+}
+
+/* ══ PDF — 2 FOLHAS EXATAS SEM CABEÇALHO ══ */
+function baixarPDF(){
+  if(!DOC)return;
+  var s=SIG||{};
+  var cidadeData=(DOC.cidade||'')+', '+dataExtenso(DOC.data_doc||'');
+  var outorgante,contratante,assProc,assCont;
+
+  if(DOC.tipo==='maior'){
+    outorgante='OUTORGANTE: <b>'+(DOC.nome||'')+',</b> brasileira, inscrita no cadastro de pessoa física sob o número de CPF: '+(DOC.cpf||'')+'. Residente e domiciliada a rua: '+(DOC.endereco||'')+' – '+(DOC.cidade||'')+'. Cep: '+(DOC.cep||'')+'.';
+    contratante='<b>'+(DOC.nome||'')+',</b> brasileira, inscrita no cadastro de pessoa física sob o número de CPF: '+(DOC.cpf||'')+'. Residente e domiciliada a rua: '+(DOC.endereco||'')+' – '+(DOC.cidade||'')+'. Cep: '+(DOC.cep||'')+'. Contrata';
+    assProc='<div class="ass-bloco">'
+      +'<p class="cidade-data">'+cidadeData+'</p>'
+      +(s.dataURL?'<img src="'+s.dataURL+'" class="sig-img"/>':'<div style="height:45pt"></div>')
+      +'<div class="linha-ass"></div>'
+      +'<p class="label-ass">Outorgante</p>'
+      +'</div>';
+    assCont='<div class="ass-bloco">'
+      +'<p class="cidade-data">'+cidadeData+'</p>'
+      +(s.dataURL?'<img src="'+s.dataURL+'" class="sig-img"/>':'<div style="height:45pt"></div>')
+      +'<div class="linha-ass"></div>'
+      +'<p class="label-ass"><b>Contratante</b></p>'
+      +'<p class="nome-adv">MARIA FABIANA LIMA MELO</p>'
+      +'<p class="nome-adv">OAB/RN 17.182</p>'
+      +'<p class="nome-adv">Assinatura Digital</p>'
+      +(s.codigo?'<div class="rodape-cod"><p><b>ASSINATURA ELETRÔNICA — Lei 14.063/2020</b><br/>Signatário: '+s.nome+'<br/>Data: '+s.dataHora+'<br/>Código: <b>'+s.codigo+'</b></p></div>':'')
+      +'</div>';
+  } else {
+    outorgante='OUTORGANTE: <b>'+(DOC.nome||'')+',</b> menor, brasileira, inscrita no cadastro de pessoa física sob o número de CPF: '+(DOC.cpf||'')+'. Neste ato representado por sua genitora, <b>'+(DOC.nome_r||'')+'</b>, inscrita no cadastro de pessoa física sob o número de CPF: '+(DOC.cpf_r||'')+'. Residente e domiciliada a rua: '+(DOC.end_r||'')+' – '+(DOC.cid_r||'')+' – Cep: '+(DOC.cep_r||'')+'.';
+    contratante='<b>'+(DOC.nome||'')+',</b> menor, brasileira, inscrita no cadastro de pessoa física sob o número de CPF: '+(DOC.cpf||'')+'. Neste ato representado por sua genitora, <b>'+(DOC.nome_r||'')+'</b>, inscrita no cadastro de pessoa física sob o número de CPF: '+(DOC.cpf_r||'')+'. Residente e domiciliada a rua: '+(DOC.end_r||'')+' – '+(DOC.cid_r||'')+' – Cep: '+(DOC.cep_r||'')+'. Contrata';
+    assProc='<div class="ass-bloco">'
+      +'<p class="cidade-data">'+cidadeData+'</p>'
+      +(s.dataURL?'<img src="'+s.dataURL+'" class="sig-img"/>':'<div style="height:45pt"></div>')
+      +'<div class="linha-ass"></div>'
+      +'<p class="label-ass">Outorgante</p>'
+      +'<div style="height:20pt"></div>'
+      +'<div class="linha-ass-curta"></div>'
+      +'<p class="label-ass">Representante legal</p>'
+      +'</div>';
+    assCont='<div class="ass-bloco">'
+      +'<p class="cidade-data">'+cidadeData+'</p>'
+      +(s.dataURL?'<img src="'+s.dataURL+'" class="sig-img"/>':'<div style="height:45pt"></div>')
+      +'<div class="linha-ass"></div>'
+      +'<p class="label-ass"><b>Contratante</b></p>'
+      +'<div style="height:20pt"></div>'
+      +'<div class="linha-ass"></div>'
+      +'<p class="label-ass"><b>Representante legal</b></p>'
+      +'<p class="nome-adv">MARIA FABIANA LIMA MELO</p>'
+      +'<p class="nome-adv">OAB/RN 17.182</p>'
+      +'<p class="nome-adv">Assinatura Digital</p>'
+      +(s.codigo?'<div class="rodape-cod"><p><b>ASSINATURA ELETRÔNICA — Lei 14.063/2020</b><br/>Signatário: '+s.nome+'<br/>Data: '+s.dataHora+'<br/>Código: <b>'+s.codigo+'</b></p></div>':'')
+      +'</div>';
+  }
+
+  var css=[
+    '@page{size:A4 portrait;margin:2.2cm 2.5cm 2cm 2.5cm}',
+    '*{box-sizing:border-box;margin:0;padding:0}',
+    'html,body{background:#fff}',
+    '.pg{width:100%;page-break-after:always;page-break-inside:avoid}',
+    '.pg:last-child{page-break-after:avoid}',
+    'h1,h2{text-align:center;font-size:12pt;font-weight:bold;margin-bottom:12pt;font-family:"Times New Roman",serif;text-transform:uppercase}',
+    'p{text-align:justify;line-height:1.6;margin-bottom:8pt;font-size:11pt;font-family:"Times New Roman",serif}',
+    'ol{list-style:none;padding-left:0;margin-bottom:6pt}',
+    'ol li{text-align:justify;line-height:1.6;margin-bottom:6pt;font-size:11pt;font-family:"Times New Roman",serif;padding-left:0}',
+    '.ass-bloco{margin-top:16pt}',
+    '.cidade-data{text-align:left;margin-bottom:6pt}',
+    '.sig-img{max-width:160px;height:50px;display:block;margin:0 0 2pt 0}',
+    '.linha-ass{border-top:1px solid #000;width:100%;margin-bottom:4pt}',
+    '.linha-ass-curta{border-top:1px solid #000;width:45%;margin-bottom:4pt}',
+    '.label-ass{text-align:center;margin-bottom:0;font-size:11pt;font-family:"Times New Roman",serif}',
+    '.nome-adv{text-align:center;margin-top:8pt;margin-bottom:0;font-size:11pt;font-family:"Times New Roman",serif}',
+    '.rodape-cod{margin-top:10pt;padding:6pt 8pt;border:1px solid #ccc;background:#f9f9f9}',
+    '.rodape-cod p{text-align:center;font-size:8pt;font-family:Arial,sans-serif;color:#555;line-height:1.5;margin:0}',
+    '.btnp{display:block;margin:0 auto 14px;padding:10px 32px;background:#111;color:#fff;font-size:13px;border:none;cursor:pointer;border-radius:8px;font-family:Arial,sans-serif}',
+    '@media print{.btnp{display:none!important}}'
+  ].join('');
+
+  var ADV_OUT_PDF='OUTORGADA: <b>MARIA FABIANA LIMA MELO,</b> brasileira, casada, CPF 012.131.764-17 advogada, inscrita na Ordem dos Advogados do Brasil, Secional do Rio Grande do Norte, sob o nº 17.182 e <b>SOCIEDADE UNIPESSOAL DE ADVOCACIA</b> CNPJ 54.453.633-0001-06, com endereço na avenida Apodi, Tirol, Natal/RN, CEP 59:020130.';
+  var ADV_CONT_PDF='<b>MARIA FABIANA LIMA MELO,</b> brasileira, casada, CPF 012.131.764-17 advogada, inscrita na Ordem dos Advogados do Brasil, Secional do Rio Grande do Norte, sob o nº 17.182 e <b>SOCIEDADE UNIPESSOAL DE ADVOCACIA</b> CNPJ 54.453.633-0001-06, com endereço na avenida Apodi, Tirol, Natal/RN, CEP 59:020130com as seguintes clausulas:';
+
+  var html='<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"/>'
+    +'<title>Procuração - '+(DOC.nome||'')+'</title>'
+    +'<style>'+css+'</style>'
+    +'</head><body>'
+    +'<button class="btnp" onclick="window.print()">🖨️ Salvar PDF — desmarque Cabeçalhos e Rodapés nas opções</button>'
+    +'<div class="pg">'
+    +'<h1>PROCURAÇÃO</h1>'
+    +'<p>'+outorgante+'</p>'
+    +'<p>'+ADV_OUT_PDF+'</p>'
+    +'<p><b>PODERES: </b>'+PODERES+'</p>'
+    +assProc
+    +'</div>'
+    +'<div class="pg">'
+    +'<h2>CONTRATO DE HONORÁRIO</h2>'
+    +'<p>'+contratante+' '+ADV_CONT_PDF+'</p>'
+    +'<ol>'+CLAUSULAS.map(function(c){return'<li>'+c+'</li>';}).join('')+'</ol>'
+    +assCont
+    +'</div>'
+    +'<scr'+'ipt>window.onload=function(){window.print();}<\/scr'+'ipt>'
+    +'</body></html>';
+
+  var blob=new Blob([html],{type:'text/html;charset=utf-8'});
+  var url=URL.createObjectURL(blob);
+  var w=window.open(url,'_blank');
+  if(!w){
+    var a=document.createElement('a');a.href=url;
+    a.download='procuracao_'+(DOC.nome||'doc').replace(/\s+/g,'_').toLowerCase()+'.html';
+    document.body.appendChild(a);a.click();document.body.removeChild(a);
+  }
+}
+
+function baixarPDFCliente(){baixarPDF();}
+</script>
+</body>
+</html>
